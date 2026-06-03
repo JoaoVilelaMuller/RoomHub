@@ -17,8 +17,24 @@ class MoradiaDAO:
         cls.moradias.append(moradia)
 
     @classmethod
+    def atualizar(cls, id, dados):
+
+        moradia = cls.buscar_por_id(id)
+
+        if moradia:
+            moradia.titulo = dados["titulo"]
+            moradia.descricao = dados["descricao"]
+            moradia.cidade = dados["cidade"]
+            moradia.universidade = dados["universidade"]
+            moradia.preco = dados["preco"]
+
+        return moradia
+
+    @classmethod
     def remover(cls, id):
         moradia = cls.buscar_por_id(id)
+
         if moradia:
             cls.moradias.remove(moradia)
+
         return moradia
