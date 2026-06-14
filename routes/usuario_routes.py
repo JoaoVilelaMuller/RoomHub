@@ -2,11 +2,17 @@ from flask import Blueprint, jsonify, request
 from dao.usuario_dao import UsuarioDAO
 from models.usuario import Usuario
 
+
+
 usuario_bp = Blueprint("usuarios", __name__)
+
+
 
 @usuario_bp.route("/api/usuarios", methods=["GET"])
 def listar_usuarios():
     return jsonify([u.__dict__ for u in UsuarioDAO.listar()])
+
+
 
 @usuario_bp.route("/api/usuarios/<int:id>", methods=["GET"])
 def buscar_usuario(id):
@@ -16,6 +22,8 @@ def buscar_usuario(id):
         return jsonify({"erro": "Usuário não encontrado"}), 404
 
     return jsonify(usuario.__dict__)
+
+
 
 @usuario_bp.route("/api/usuarios", methods=["POST"])
 def criar_usuario():
@@ -33,9 +41,25 @@ def criar_usuario():
 
     return jsonify(usuario.__dict__), 201
 
+
+
 @usuario_bp.route("/api/usuarios/<int:id>", methods=["DELETE"])
 def excluir_usuario(id):
     usuario = UsuarioDAO.remover(id)
+
+    if usuario is None:
+        return jsonify({"erro": "Usuário não encontrado"}), 404
+
+    return jsonify(usuario.__dict__)
+
+
+
+@usuario_bp.route("/api/usuarios/<int:id>", methods=["PUT"])
+def atualizar_usuario(id):
+
+    dados = request.get_json()
+
+    usuario = UsuarioDAO.atualizar(id, dados)
 
     if usuario is None:
         return jsonify({"erro": "Usuário não encontrado"}), 404
