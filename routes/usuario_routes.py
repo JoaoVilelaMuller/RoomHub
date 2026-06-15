@@ -27,7 +27,23 @@ def buscar_usuario(id):
 
 @usuario_bp.route("/api/usuarios", methods=["POST"])
 def criar_usuario():
+
     dados = request.get_json()
+
+    if not dados:
+        return jsonify({"erro": "Nenhum dado enviado"}), 400
+
+    if not dados.get("nome"):
+        return jsonify({"erro": "Nome é obrigatório"}), 400
+
+    if not dados.get("email"):
+        return jsonify({"erro": "Email é obrigatório"}), 400
+
+    if not dados.get("senha"):
+        return jsonify({"erro": "Senha é obrigatória"}), 400
+
+    if not dados.get("tipo_usuario"):
+        return jsonify({"erro": "Tipo de usuário é obrigatório"}), 400
 
     usuario = Usuario(
         dados["id"],
@@ -58,6 +74,15 @@ def excluir_usuario(id):
 def atualizar_usuario(id):
 
     dados = request.get_json()
+
+    if not dados:
+        return jsonify({"erro": "Nenhum dado enviado"}), 400
+
+    if not dados.get("nome"):
+        return jsonify({"erro": "Nome é obrigatório"}), 400
+
+    if not dados.get("email"):
+        return jsonify({"erro": "Email é obrigatório"}), 400
 
     usuario = UsuarioDAO.atualizar(id, dados)
 

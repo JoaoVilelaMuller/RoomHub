@@ -27,7 +27,23 @@ def buscar_moradia(id):
 
 @moradia_bp.route("/api/moradias", methods=["POST"])
 def criar_moradia():
+
     dados = request.get_json()
+
+    if not dados:
+        return jsonify({"erro": "Nenhum dado enviado"}), 400
+
+    if not dados.get("titulo"):
+        return jsonify({"erro": "Título é obrigatório"}), 400
+
+    if not dados.get("cidade"):
+        return jsonify({"erro": "Cidade é obrigatória"}), 400
+
+    if not dados.get("universidade"):
+        return jsonify({"erro": "Universidade é obrigatória"}), 400
+
+    if dados.get("preco", 0) < 0:
+        return jsonify({"erro": "Preço inválido"}), 400
 
     moradia = Moradia(
         dados["id"],
@@ -59,6 +75,21 @@ def excluir_moradia(id):
 def atualizar_moradia(id):
 
     dados = request.get_json()
+
+    if not dados:
+        return jsonify({"erro": "Nenhum dado enviado"}), 400
+
+    if not dados.get("titulo"):
+        return jsonify({"erro": "Título é obrigatório"}), 400
+
+    if not dados.get("cidade"):
+        return jsonify({"erro": "Cidade é obrigatória"}), 400
+
+    if not dados.get("universidade"):
+        return jsonify({"erro": "Universidade é obrigatória"}), 400
+
+    if dados.get("preco", 0) < 0:
+        return jsonify({"erro": "Preço inválido"}), 400
 
     moradia = MoradiaDAO.atualizar(id, dados)
 
