@@ -1,12 +1,19 @@
-class Moradia:
-    def __init__(self, id, titulo, descricao, cidade, universidade, preco):
+from database import Base
+from sqlalchemy import Column, Float, Integer, String, Text
 
-        if not titulo:
-            raise ValueError("Título é obrigatório")
 
-        if preco < 0:
-            raise ValueError("Preço não pode ser negativo")
+class Moradia(Base):
+    __tablename__ = "moradias"
 
+    id = Column(Integer, primary_key=True)
+    titulo = Column(String(150), nullable=False)
+    descricao = Column(Text, nullable=False, default="")
+    cidade = Column(String(100), nullable=False)
+    universidade = Column(String(150), nullable=False)
+    preco = Column(Float, nullable=False)
+
+    def __init__(self, id=None, titulo=None, descricao="", cidade=None,
+                 universidade=None, preco=None):
         self.id = id
         self.titulo = titulo
         self.descricao = descricao
@@ -21,6 +28,11 @@ class Moradia:
         return {
             "id": self.id,
             "titulo": self.titulo,
+            "descricao": self.descricao,
+            "cidade": self.cidade,
+            "universidade": self.universidade,
+            "preco": self.preco
+        }
             "descricao": self.descricao,
             "cidade": self.cidade,
             "universidade": self.universidade,
