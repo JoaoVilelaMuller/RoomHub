@@ -1,12 +1,17 @@
-class Usuario:
-    def __init__(self, id, nome, email, senha, tipo_usuario):
+from database import Base
+from sqlalchemy import Column, Integer, String
 
-        if not nome:
-            raise ValueError("Nome é obrigatório")
 
-        if not email:
-            raise ValueError("Email é obrigatório")
+class Usuario(Base):
+    __tablename__ = "usuarios"
 
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(100), nullable=False)
+    email = Column(String(150), nullable=False, unique=True)
+    senha = Column(String(255), nullable=False)
+    tipo_usuario = Column(String(50), nullable=False)
+
+    def __init__(self, id=None, nome=None, email=None, senha=None, tipo_usuario=None):
         self.id = id
         self.nome = nome
         self.email = email
