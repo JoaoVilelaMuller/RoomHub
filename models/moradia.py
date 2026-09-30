@@ -33,8 +33,3 @@ class Moradia(Base):
             "universidade": self.universidade,
             "preco": self.preco
         }
-            "descricao": self.descricao,
-            "cidade": self.cidade,
-            "universidade": self.universidade,
-            "preco": self.preco
-        }

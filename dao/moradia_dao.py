@@ -1,11 +1,11 @@
-from database import SessionLocal
+import database
 from models.moradia import Moradia
 
 
 class MoradiaDAO:
     @classmethod
     def listar(cls):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             return session.query(Moradia).order_by(Moradia.id).all()
         finally:
@@ -13,7 +13,7 @@ class MoradiaDAO:
 
     @classmethod
     def buscar_por_id(cls, id):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             return session.get(Moradia, id)
         finally:
@@ -21,7 +21,7 @@ class MoradiaDAO:
 
     @classmethod
     def adicionar(cls, moradia):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             session.add(moradia)
             session.commit()
@@ -31,7 +31,7 @@ class MoradiaDAO:
 
     @classmethod
     def atualizar(cls, id, dados):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             moradia = session.get(Moradia, id)
             if moradia:
@@ -47,7 +47,7 @@ class MoradiaDAO:
 
     @classmethod
     def remover(cls, id):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             moradia = session.get(Moradia, id)
             if moradia:

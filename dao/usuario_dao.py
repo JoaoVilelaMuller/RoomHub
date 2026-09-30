@@ -1,11 +1,11 @@
-from database import SessionLocal
+import database
 from models.usuario import Usuario
 
 
 class UsuarioDAO:
     @classmethod
     def listar(cls):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             return session.query(Usuario).order_by(Usuario.id).all()
         finally:
@@ -13,7 +13,7 @@ class UsuarioDAO:
 
     @classmethod
     def buscar_por_id(cls, id):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             return session.get(Usuario, id)
         finally:
@@ -21,7 +21,7 @@ class UsuarioDAO:
 
     @classmethod
     def buscar_por_email(cls, email):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             return session.query(Usuario).filter_by(email=email).first()
         finally:
@@ -29,7 +29,7 @@ class UsuarioDAO:
 
     @classmethod
     def adicionar(cls, usuario):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             session.add(usuario)
             session.commit()
@@ -39,7 +39,7 @@ class UsuarioDAO:
 
     @classmethod
     def atualizar(cls, id, dados):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             usuario = session.get(Usuario, id)
             if usuario:
@@ -54,7 +54,7 @@ class UsuarioDAO:
 
     @classmethod
     def remover(cls, id):
-        session = SessionLocal()
+        session = database.SessionLocal()
         try:
             usuario = session.get(Usuario, id)
             if usuario:
@@ -63,9 +63,5 @@ class UsuarioDAO:
             return usuario
         finally:
             session.close()
+
     @classmethod
-    def remover(cls, id):
-        usuario = cls.buscar_por_id(id)
-        if usuario:
-            cls.usuarios.remove(usuario)
-        return usuario
