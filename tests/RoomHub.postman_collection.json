@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "RoomHub API",
+    "description": "Cenários de sucesso e validação para executar no Thunder Client.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "POST Criar usuario",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Retorna 201', function () { pm.response.to.have.status(201); });",
+                  "pm.test('Nao retorna senha', function () { pm.expect(pm.response.json()).to.not.have.property('senha'); });",
+                  "pm.collectionVariables.set('usuarioId', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Usuario Thunder\",\n  \"email\": \"usuario.thunder@example.com\",\n  \"senha\": \"senha123\",\n  \"tipo_usuario\": \"estudante\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/api/usuarios"
+          }
+        },
+        {
+          "name": "GET Listar usuarios",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 e uma lista', function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an('array'); });"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/usuarios" }
+        },
+        {
+          "name": "GET Buscar usuario criado",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 com o usuario criado', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('usuarioId'))); });"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}" }
+        },
+        {
+          "name": "PUT Atualizar usuario",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 e atualiza o nome', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().nome).to.eql('Usuario Thunder Atualizado'); });"] } }],
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Usuario Thunder Atualizado\",\n  \"email\": \"usuario.thunder@example.com\",\n  \"senha\": \"senha123\",\n  \"tipo_usuario\": \"estudante\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}"
+          }
+        },
+        {
+          "name": "POST Rejeitar email duplicado",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 409 para email duplicado', function () { pm.response.to.have.status(409); });"] } }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"nome\": \"Outro Usuario\",\n  \"email\": \"usuario.thunder@example.com\",\n  \"senha\": \"senha123\",\n  \"tipo_usuario\": \"estudante\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": "{{baseUrl}}/api/usuarios"
+          }
+        },
+        {
+          "name": "POST Rejeitar usuario sem campos",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 400 para dados invalidos', function () { pm.response.to.have.status(400); });"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/usuarios" }
+        },
+        {
+          "name": "DELETE Remover usuario",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 ao remover', function () { pm.response.to.have.status(200); });"] } }],
+          "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}" }
+        },
+        {
+          "name": "GET Usuario removido retorna 404",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 404 para usuario inexistente', function () { pm.response.to.have.status(404); });"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/usuarios/{{usuarioId}}" }
+        }
+      ]
+    },
+    {
+      "name": "Moradias",
+      "item": [
+        {
+          "name": "POST Rejeitar preco negativo",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 400 para preco negativo', function () { pm.response.to.have.status(400); });"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Moradia invalida\",\n  \"cidade\": \"Campinas\",\n  \"universidade\": \"Unicamp\",\n  \"preco\": -1\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/moradias" }
+        },
+        {
+          "name": "POST Criar moradia",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 201', function () { pm.response.to.have.status(201); });", "pm.collectionVariables.set('moradiaId', pm.response.json().id);"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Republica Thunder\",\n  \"descricao\": \"Perto da universidade\",\n  \"cidade\": \"Campinas\",\n  \"universidade\": \"Unicamp\",\n  \"preco\": 700\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/moradias" }
+        },
+        {
+          "name": "GET Listar moradias",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 e uma lista', function () { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.be.an('array'); });"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/moradias" }
+        },
+        {
+          "name": "GET Buscar moradia criada",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 com a moradia criada', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('moradiaId'))); });"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/moradias/{{moradiaId}}" }
+        },
+        {
+          "name": "PUT Atualizar moradia",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 e atualiza o preco', function () { pm.response.to.have.status(200); pm.expect(pm.response.json().preco).to.eql(750); });"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Republica Thunder Atualizada\",\n  \"descricao\": \"Perto da universidade\",\n  \"cidade\": \"Campinas\",\n  \"universidade\": \"Unicamp\",\n  \"preco\": 750\n}", "options": { "raw": { "language": "json" } } }, "url": "{{baseUrl}}/api/moradias/{{moradiaId}}" }
+        },
+        {
+          "name": "DELETE Remover moradia",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 200 ao remover', function () { pm.response.to.have.status(200); });"] } }],
+          "request": { "method": "DELETE", "header": [], "url": "{{baseUrl}}/api/moradias/{{moradiaId}}" }
+        },
+        {
+          "name": "GET Moradia removida retorna 404",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Retorna 404 para moradia inexistente', function () { pm.response.to.have.status(404); });"] } }],
+          "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/moradias/{{moradiaId}}" }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:5000" },
+    { "key": "usuarioId", "value": "" },
+    { "key": "moradiaId", "value": "" }
+  ]
+}

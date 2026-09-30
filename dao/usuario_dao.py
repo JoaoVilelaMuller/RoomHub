@@ -63,5 +63,3 @@ class UsuarioDAO:
             return usuario
         finally:
             session.close()
-
-    @classmethod
